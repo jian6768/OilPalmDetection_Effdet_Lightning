@@ -1,0 +1,44 @@
+# --- Ignore contents of datasets/ but keep folder structure ---
+datasets/*
+!datasets/.gitkeep
+!datasets/*/
+!datasets/*/.gitkeep
+
+# Optional: keep annotation schemas (if needed)
+!datasets/**/*.json
+!datasets/**/*.yaml
+
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+
+# --- Virtual Environment ---
+.venv/
+env/
+venv/
+
+# --- Model logs / checkpoints ---
+lightning_logs/
+logs/
+wandb/
+checkpoints/
+*.ckpt
+*.pth
+*.pt
+
+# --- Temporary / unused ---
+Unused/
+
+# --- Secrets ---
+.env
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- OS ---
+.DS_Store
+
+# --- IDE ---
+.vscode/
+.idea/
