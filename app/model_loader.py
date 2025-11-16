@@ -5,25 +5,19 @@ from PIL import Image
 import io
 from torchvision import transforms
 
-from app.models.effdet_model import EffDetModel
+
+from app.models.effdet_model import EffDetLModel
 from app.config.config import config
 from app.config.classes import CLASS_NAMES
 
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+DEVICE = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
 
-model = None
+# model = None
 
 
 def load_model():
-    global model
-    print("Loading EffDet model...")
-
-    model = EffDetModel.load_from_checkpoint(
-        config.checkpoint_path,
-        model_architecture=config.model_architecture,
-        num_classes=config.num_classes,
-        bench_task=config.bench_task
-    )
+    #Remember to remove lr and batch size subsequently. Let model load itself. 
+    model = EffDetLModel.load_from_checkpoint(config.checkpoint_path, bench_task = "predict")
     model.to(DEVICE).eval()
     print("Model loaded.")
     return model

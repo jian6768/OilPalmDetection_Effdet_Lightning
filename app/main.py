@@ -12,7 +12,7 @@ app = FastAPI(
 
 @app.on_event("startup")
 def startup():
-    load_model()
+    app.model = load_model()
 
 @app.post("/predict")
 async def predict_endpoint(file: UploadFile = File(...)):

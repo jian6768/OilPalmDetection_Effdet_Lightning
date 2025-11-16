@@ -1,7 +1,7 @@
 CLASS_NAMES = {
-    0: "unripe",
-    1: "ripe",
-    2: "overripe",
-    3: "empty_bunch",
-    4: "other"
+    0: "FFB",
+    1: "Empty- Abnormal",
+    2: "Overripe",
+    3: "Ripe",
+    4: "Unripe- Underripe"
 }

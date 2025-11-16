@@ -12,7 +12,6 @@ class EffDetLModel(L.LightningModule):
 
         self.save_hyperparameters("model_architecture", "num_classes", "bench_task", "lr", "batch_size")
 
-
         self.map_metric = MeanAveragePrecision(box_format='xyxy', iou_type='bbox')
         self.batch_size = batch_size
         self.lr = lr
