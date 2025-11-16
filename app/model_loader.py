@@ -12,9 +12,6 @@ from app.config.classes import CLASS_NAMES
 
 DEVICE = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
 
-# model = None
-
-
 def load_model():
     #Remember to remove lr and batch size subsequently. Let model load itself. 
     model = EffDetLModel.load_from_checkpoint(config.checkpoint_path, bench_task = "predict")
@@ -37,10 +34,20 @@ def preprocess(image_bytes: bytes):
 
 
 # Postprocessing
-def postprocess(pred):
-    detections = []
-    pred = pred[0].detach().cpu().tolist()
 
+def postprocess_images_outputs(preds):
+    detections_list = []
+    for i in range(len(preds)):
+        detections_list.append(postprocess_image_output(preds[i]))
+    return detections_list
+
+def postprocess_image_output(pred):
+
+    #outputs list of dictionaries. 
+    detections = []
+    pred = pred.detach().cpu().tolist()
+
+    #Iterate through all detections within a particular prediction. 
     for (x1, y1, x2, y2, score, cls) in pred:
         if score < config.score_threshold:
             continue
