@@ -21,6 +21,19 @@ def load_model():
     return model
 
 
+def make_prediction(model:EffDetLModel, image_bytes: bytes):
+    img = preprocess_image(image_bytes=image_bytes)
+
+    model.to(DEVICE)
+    model.eval()
+
+    with torch.no_grad():
+        pred = model(img).detach().cpu().squeeze(0)
+        detections = postprocess_image_output(pred)
+
+    return detections
+
+
 # Preprocessing
 def preprocess_image(image_bytes: bytes):
 
@@ -37,8 +50,8 @@ def preprocess_image(image_bytes: bytes):
     return torch.from_numpy(transform(img, {})[0]).unsqueeze(0).float().to(DEVICE)
 
 
-# Postprocessing
 
+# Postprocessing
 def postprocess_images_outputs(preds):
     detections_list = []
     for i in range(len(preds)):
@@ -64,3 +77,4 @@ def postprocess_image_output(pred):
         })
 
     return detections
+
