@@ -9,6 +9,7 @@ from torchvision import transforms
 from app.models.effdet_model import EffDetLModel
 from app.config.config import config
 from app.config.classes import CLASS_NAMES
+from effdet.data.transforms import RandomFlip, RandomResizePad, resolve_fill_color, ImageToNumpy, Compose, ResizePad
 
 DEVICE = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
 
@@ -21,16 +22,19 @@ def load_model():
 
 
 # Preprocessing
-def preprocess(image_bytes: bytes):
+def preprocess_image(image_bytes: bytes):
+
+    #convert image to RGB
     img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
 
-    transform = transforms.Compose([
-        transforms.Resize(config.image_size),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=config.normalize_mean, std=config.normalize_std),
-    ])
+    fill_color = resolve_fill_color("mean", config.IMAGENET_DEFAULT_MEAN)
 
-    return transform(img).unsqueeze(0).to(DEVICE)
+    image_tfl = [ResizePad(target_size=config.image_size, interpolation="bilinear", fill_color=fill_color), ImageToNumpy(),]
+
+    transform = Compose(image_tfl)
+
+    # Model expects BCHW. Preprocess image converts image into a format sutable for model and moves it to GPU. 
+    return torch.from_numpy(transform(img, {})[0]).unsqueeze(0).float().to(DEVICE)
 
 
 # Postprocessing
