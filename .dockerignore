@@ -1,0 +1,33 @@
+# Version control folders
+.git
+.gitignore
+
+# Build / Dev / IDE files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.vscode/
+.ipynb_checkpoints/
+*.ipynb   # maybe if you have notebooks you don’t want in the image
+
+# Environment and secrets
+.env
+*.env
+secrets/
+*.key
+
+# Data / dataset files that are large and not needed in runtime image
+datasets/
+raw_data/
+notebooks/
+lightning_logs/
+logs/
+*.log
+
+# Model weights if you have a separate download pipeline instead of bundling them
+weights/   # maybe if you don’t want to fully include local heavy weights
+
+# --- Temporary / unused ---
+Unused/
+
