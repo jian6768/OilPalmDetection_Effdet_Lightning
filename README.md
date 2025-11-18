@@ -21,7 +21,7 @@ This repository contains:
 ## 🧠 Model Architecture
 This project uses:
 
-**EfficientDet (D0–D7 variants available)**  
+**EfficientDet**  
 via the `effdet` PyTorch implementation by Ross Wightman.
 
 Features:
@@ -40,13 +40,18 @@ The final model outputs:
 
 ## 📁 Dataset Structure
 You should create a dataset folder like:
+```bash
 datasets/
 ├── train/
 │ ├── images/
 │ └── labels/
-├── val/
+├── valid/
 │ ├── images/
 │ └── labels/
+├── test/
+│ ├── images/
+│ └── labels/
+```
 
 ## 🛠️ Installation
 
@@ -62,12 +67,23 @@ source .venv/bin/activate   # Mac/Linux
 ### 3. Install Dependencies
 pip install -r requirements.txt
 
+```
 
-## 📁 Acknowledgements
+### 📁 Acknowledgements
 This project uses the EfficientDet PyTorch implementation by Ross Wightman:
 👉 https://github.com/rwightman/efficientdet-pytorch
 
 Licensed under Apache 2.0.
 
 We gratefully acknowledge Ross Wightman's contributions to the open-source vision community.
+
+### 🐳 Docker Support
+
+This project includes a Dockerfile for easy containerized deployment.
+
+### Build the image
+
+```bash
+docker build -t myapp:latest .
+
 
