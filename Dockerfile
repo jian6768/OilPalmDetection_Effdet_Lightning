@@ -4,8 +4,8 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Avoid writing .pyc files, unbuffered stdout
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # Install system dependencies (if needed)
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -20,8 +20,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app/ ./app
 COPY weights/ ./weights
 
-# Expose port 8000
-EXPOSE 8000
+# Cloud Run expects the container to listen on $PORT (default 8080)
+ENV PORT=8080
+
+# Expose the port (use 8080 for Cloud Run)
+EXPOSE 8080
 
 # Start the API
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
