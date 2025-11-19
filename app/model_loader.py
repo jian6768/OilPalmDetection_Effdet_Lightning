@@ -78,3 +78,68 @@ def postprocess_image_output(pred):
 
     return detections
 
+
+def get_display_detection(detections, original_size, model_img_size=config.image_size[0]):
+    """
+    Rescales boxes back to original image coordinates. Model requires 512x512 as input. 
+    
+    """
+    orig_w, orig_h = original_size
+    
+    # 1. Calculate the scale factor used during preprocessing
+    # (Ensure this logic matches your training preprocessing!)
+    scale = model_img_size / max(orig_w, orig_h)
+    
+    # 2. Calculate Padding
+    # This assumes your preprocessing aligns to TOP-LEFT.
+    pad_x = 0 
+    pad_y = 0 
+    
+    final_detections = []
+    
+    for det in detections:
+        
+        if isinstance(det, dict):
+            box = det['bbox'] # Access by key instead of slice [0:4]
+            score = det['score']
+            class_id = det['class_id']
+            # Preserve existing class name if available
+            class_name = det.get('class_name', 'Overripe') 
+        else:
+            # Fallback if 'det' is a raw list/tensor [x1, y1, x2, y2, score, class]
+            box = det[0:4]
+            score = det[4]
+            class_id = int(det[5])
+            class_name = "Error"
+        # --- FIX END ---
+
+        # 4. Reverse the padding first
+        x1 = box[0] - pad_x
+        y1 = box[1] - pad_y
+        x2 = box[2] - pad_x
+        y2 = box[3] - pad_y
+        
+        # 5. Reverse the scaling
+        x1 = x1 / scale
+        y1 = y1 / scale
+        x2 = x2 / scale
+        y2 = y2 / scale
+        
+        # 6. Clip to original image and format
+        final_detections.append({
+            "bbox": [
+                max(0, float(x1)), 
+                max(0, float(y1)), 
+                min(orig_w, float(x2)), 
+                min(orig_h, float(y2))
+            ],
+            "score": float(score),
+            "class_id": class_id,
+            "class_name": class_name
+        })
+        
+    return final_detections
+
+
+
+
